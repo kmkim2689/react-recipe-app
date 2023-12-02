@@ -1,70 +1,243 @@
-# Getting Started with Create React App
+# Recipe App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Reference
+* [React Crash Course - Build A Full Recipe App Tutorial](https://youtu.be/xc4uOzlndAk?feature=shared)
 
-## Available Scripts
+## API
+* To Get Recipe Data : Spoonacular
+    * https://spoonacular.com/food-api
+    * Profile > `API Key`
 
-In the project directory, you can run:
+* Warning : Up to 150 Requests Per Day
+<br><br/>
+---
 
-### `npm start`
+## Groundworks
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Store the API Key in a `.env` file
+* root > create .env file
+* The Reason Why
+    * If API Key is exposed to the code...
+    * Anyone can use that without permission -> unexpected costs ...
+* To Protect Api Keys
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    ```
+    REACT_APP_API_KEY='apikeyapikey' // quotation mark needed
+    ```
 
-### `npm test`
+* How to Use the Values in JS?
+    ```
+    process.env.CONST_NAME
+    ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Get rid of unnecessary files
+* Only needed :  App.js, index.css, index.js
 
-### `npm run build`
+3. Project Structure
+* components
+* pages
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Front Page(Home)
+> **Make Components First**, assemble them in a page after making all the components needed
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### pages > Home.jsx
+* made up of two components
+    
+    
+* components > Popular.jsx
+    * trending(component > Popular.jsx)
+    
+* components > Veggie.jsx
+    * vegeterian picks(component > Veggie.jsx)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+> How to generate a new component?
+<br></br>
+-> install plugin : ES7++ React/Redux/React...
+-> rfce
 
-### `npm run eject`
+* **export & import needed** to make use of other components in one Component File
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+import React from 'react'
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+function Popular() {
+  return (
+    <div>Popular</div>
+  )
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+export default Popular
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+import React from 'react'
 
-## Learn More
+function Veggie() {
+  return (
+    <div>Veggie</div>
+  )
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+export default Veggie
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+import Veggie from "../components/Veggie";
+import Popular from "../components/Popular";
+import React from 'react'
 
-### Code Splitting
+function Home() {
+  return (
+    <div>
+        <Veggie />
+        <Popular />
+    </div>
+  )
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+export default Home
+```
 
-### Analyzing the Bundle Size
+```
+import Home from "./pages/Home";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+function App() {
+  return (
+    <div className="App">
+      <h1>Hi</h1>
+      <Home />
+    </div>
+  );
+}
 
-### Making a Progressive Web App
+export default App;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
 
-### Advanced Configuration
+### Generate Pages.jsx file : To Contain All the Pages
+* to avoid the massive code size of App.js
+    * Without Pages.jsx...
+    ```
+    // App.js
+    <div className="App">
+        <h1>Hi</h1>
+        <Home />
+        <AnotherPage />
+        <AnotherPage 2 />
+        <TheOtherPage />
+        // ... too messy
+    </div>
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    * With Pages.jsx
+    ```
+    // App.js
+    <div className="App">
+        <h1>Hi</h1>
+        <Pages /> // much clearer
+    </div>
 
-### Deployment
+    // Pages.jsx
+    // use routing...
+    ```
+* to use Routing for rendering all the pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Work on Popular.jsx
+* Fetch the popular items from API
+* Spoonacular API > Documentation > Get Random Recipes
+    * https://spoonacular.com/food-api/docs#Get-Random-Recipes
+    * to find random popular recipes
+* url : https://api.spoonacular.com/recipes/random
+* attach api key
 
-### `npm run build` fails to minify
+1. make a function to fetch data from api -> use them in JSON Type
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* functions
+    * .json() : resolves to a JavaScript object.
+
+```
+// async : to make the function asynchronous
+// data that we need to wait for...
+// to make sure that the data is fetched before we render the component
+const getPopular = async () => {
+    // use backtick(``) to use the variable inside the string
+    const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+    // give json format to the data
+    const data = await api.json();
+    console.log(data);
+}
+```
+
+2. invoke function using useEffect
+* to invoke the function as soon as the component is rendered
+* two main parameters
+    * what to do : arrow function
+    * the variances -> when they are changed, first parameter is invoked
+        * when empty array -> only when the component is first rendered
+
+    ```
+    // useEffect : to run the function when the component is rendered
+    useEffect(() => {
+        getPopular();
+    }, [])
+    ```
+
+3. set state variables
+```
+const [popular, setPopular] = useState([]); // to store the data from the api
+// initial value for "popular" : empty array
+```
+
+* when data fetched from api, set popular variable using setPopular function
+```
+const getPopular = async () => {
+    const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+    const data = await api.json();
+
+    setPopular(data.recipes);
+}
+```
+
+4. render data on the screen using `popular` state variable
+```
+import React, { useEffect, useState } from 'react'
+
+function Popular() {
+    
+    const [popular, setPopular] = useState([]);
+
+    useEffect(() => {
+        getPopular();
+    }, []);
+
+    const getPopular = async () => {
+        const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+        const data = await api.json();
+        console.log(data);
+
+        setPopular(data.recipes);
+    }
+
+  return (
+    <div>
+        {popular.map((recipe) => {
+            return (
+                <div>
+                    <p>{recipe.title}</p>
+                </div>
+            )
+        })}
+    </div>
+  );
+}
+
+export default Popular
+```
+
+* what is the problem in this code?
+    * Warning: Each child in a list should have a unique "key" prop.
+    * when mapping/looping over stuff -> outputting on the screen..
+        * unique identifier for each item needed
+        * **just in case they get updated or removed from the dom -> position issue for rendering**
+
+    * solution : add `key` prop into parent 
