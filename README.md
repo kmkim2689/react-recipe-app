@@ -241,3 +241,265 @@ export default Popular
         * **just in case they get updated or removed from the dom -> position issue for rendering**
 
     * solution : add `key` prop into parent 
+
+
+5. install packages
+* things to install below
+
+* all at once
+`npm install framer-motion react-icons react-router-dom styled-components @splidejs/react-splide`
+
+* separately
+`npm install framer-motion`
+`npm install react-icons`
+`npm install react-router-dom` // for routing
+`npm install styled-components` // for css in js
+`npm install @splidejs/react-splide`// for customizable carousel
+
+* how to check whether installed or not?
+    * check package.json
+
+6. make use of styled-components
+
+```
+import styled from "styled-components";
+```
+
+* what this allows us to do?
+    * make a component to be attached styling without css files
+    * make kind of a component only for styling -> attach to the component for rendering
+
+* how to use it?
+i. make a styled component
+```
+styled-component alias.htmltag`
+    // css properties
+    margin: 4rem 0rem;
+`
+```
+
+ii. use as a component
+```
+<Wrapper>
+    <h3>Popular Picks</h3>
+</Wrapper>
+```
+
+* below is the same with
+```
+<div style="margin: 4rem 0rem">
+    <h3>Popular picks</h3>
+</div>
+```
+
+```
+import React, { useEffect, useState } from 'react'
+import styled from "styled-components";
+
+function Popular() {
+    
+    const [popular, setPopular] = useState([]); // to store the data from the api
+
+    // useEffect : to run the function when the component is rendered
+    useEffect(() => {
+        getPopular();
+    }, []);
+
+    // async : to make the function asynchronous
+    // await : to wait for the data to be fetched
+    // data that we need to wait for...
+    // to make sure that the data is fetched before we render the component
+    const getPopular = async () => {
+        // use backtick(``) to use the variable inside the string
+        // "await" is only used inside the async function
+        const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+        // give json format to the data
+        const data = await api.json();
+        console.log(data);
+
+        setPopular(data.recipes);
+    }
+
+  return (
+    <div>
+        <Wrapper>
+            <h3>Popular Picks</h3>
+            {popular.map((recipe) => {
+            return (
+                // 아이템의 최상위 태그에 key를 넣어줘야 한다.
+                <div key={recipe.id}>
+                    // TODO Make a Card for Every Recipe
+                </div>
+            )
+        })}
+        </Wrapper>
+        
+    </div>
+
+  );
+}
+
+const Wrapper = styled.div`
+    margin: 4rem 0rem;
+`
+
+export default Popular
+```
+
+7. make card item for recipe
+```
+const Card = styled.div`
+    min-height: 25rem;
+    border-radius: 2rem;
+    overflow: hidden;
+
+    img {
+        border-radius: 2rem;
+    }
+`
+```
+
+```
+<div>
+    <Wrapper>
+        <h3>Popular Picks</h3>
+        {popular.map((recipe) => {
+        return (
+            // 아이템의 최상위 태그에 key를 넣어줘야 한다.
+            <div key={recipe.id}>
+                {/* // TODO Make a Card for Every Recipe */}
+                <Card>
+                    <p>
+                        {recipe.title}
+                    </p>
+                    <img src={recipe.image} alt={recipe.title} />
+                </Card>
+            </div>
+        )
+    })}
+    </Wrapper>
+    
+</div>
+```
+
+8. make a carousel for scrollable list(slides)
+* https://splidejs.com/integration/react-splide/
+```
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import '@splidejs/react-splide/css';
+```
+
+* carousel : implement using Splide Component
+* each individual item(card) : implement using SplideSlide Component
+
+* how to customize carousel
+    * inside <Splide>, use `options` prop
+    ```
+    <Splide options={{perPage: 4}}>
+    ```
+
+```
+import React, { useEffect, useState } from 'react'
+import styled from "styled-components";
+// https://splidejs.com/integration/react-splide/
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import '@splidejs/react-splide/css';
+
+function Popular() {
+    
+    const [popular, setPopular] = useState([]); // to store the data from the api
+
+    // useEffect : to run the function when the component is rendered
+    useEffect(() => {
+        getPopular();
+    }, []);
+
+    // async : to make the function asynchronous
+    // await : to wait for the data to be fetched
+    // data that we need to wait for...
+    // to make sure that the data is fetched before we render the component
+    const getPopular = async () => {
+        // use backtick(``) to use the variable inside the string
+        // "await" is only used inside the async function
+        const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+        // give json format to the data
+        const data = await api.json();
+        console.log(data);
+
+        setPopular(data.recipes);
+    }
+
+  return (
+    <div>
+        <Wrapper>
+            <h3>Popular Picks</h3>
+            <Splide options={{perPage: 4, arrows: false, pagination: false, drag: 'free', gap: '5rem'}}>
+                // reason of `popular &&` : to make sure that the data is fetched before we render the component 
+                {popular && popular.map((recipe) => {
+                    return (
+                        <SplideSlide key={recipe.id}>
+                            <Card>
+                                <p>
+                                    {recipe.title}
+                                </p>
+                                <img src={recipe.image} alt={recipe.title} />
+                                <Gradient />
+                            </Card>
+                        </SplideSlide>
+                    )
+                })}
+            </Splide>
+
+        </Wrapper>
+        
+    </div>
+
+  );
+}
+
+const Wrapper = styled.div`
+    margin: 4rem 0rem;
+`
+
+const Card = styled.div`
+    min-height: 25rem;
+    border-radius: 2rem;
+    overflow: hidden;
+
+    img {
+        border-radius: 2rem;
+        positon: absolute;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; // not to stretch the image
+    }
+
+    p {
+        position: absolute;
+        z-index: 10;
+        left: 50%;
+        bottom: 0%;
+        transform: translate(-50%, 0%);
+        color: white;
+        width: 100%;
+        text-align: center;
+        font-weight: 600;
+        fontsize: 1rem;
+        height: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`
+
+const Gradient = styled.div`
+    z-index:3;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+    position: absolute;
+`
+
+export default Popular
+```
