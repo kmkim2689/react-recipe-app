@@ -503,3 +503,34 @@ const Gradient = styled.div`
 
 export default Popular
 ```
+
+9. implement local storage
+* using `localStorage`
+* if there's nothing in the local storage, set the data
+* if something's in the local storage, just set the popular state variable to it
+
+```
+const check = localStorage.getItem('popular');
+
+// check data
+if (check) { // if there is something
+    setPopular(JSON.parse(check)); // to make the string into JSON
+} else {
+    // use backtick(``) to use the variable inside the string
+    // "await" is only used inside the async function
+    const api = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`);
+    // give json format to the data
+    const data = await api.json();
+    console.log(data);
+
+    // setLocalStorage : to store the data in the local storage
+    // JSON.stringify : convert json type into string to store in the local storage
+    localStorage.setItem("popular", JSON.stringify(data.recipes));
+
+    setPopular(data.recipes);
+}
+```
+
+---
+
+### Styling on index.css
