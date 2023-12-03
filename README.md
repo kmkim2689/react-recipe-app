@@ -986,3 +986,7 @@ const getSearchResult = async (query) => {
         }
     `;
     ```
+
+    * render detail info
+        * dangerouslySetInnerHTML
+            * 데이터에 함께 담겨오는 html 태그를 그대로 반영해준다.
