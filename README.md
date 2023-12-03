@@ -534,3 +534,266 @@ if (check) { // if there is something
 ---
 
 ### Styling on index.css
+```
+/* * : grab every element from dom */
+* {
+  margin: 0;
+  padding: 0;  
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body {
+    margin: 0% 20%; /* to make the horizontal margin */
+}
+
+h4 {
+  font-size: 1rem;
+  color: rgb(56, 56, 56);
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: rgb(56, 56, 56);
+  line-height: 2.5rem;
+  margin: 2rem 0rem;
+}
+
+a {
+  color: rgb(56, 56, 56);
+}
+```
+
+* How to add fonts?
+    * Google Fonts > Search Specific Font > https://fonts.google.com/specimen/Montserrat?query=montse
+    * copy link tag
+    ```
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    ```
+    * paste it into public > index.html
+
+---
+### Veggie Component
+* the same as Popular component
+
+---
+### Buttons for Category
+* components > Category.jsx
+
+* import icons needed
+    * https://react-icons.github.io/react-icons/
+
+    ```
+    import { FaPizzaSlice, FaHamburger } from 'reaact-icons/fa';
+    import { GiNoodles, GiChopsticks } from 'react-icons/gi';
+    ```
+
+* routing needed
+```
+import { NavLink } from 'react-router-dom';
+```
+
+* use icons
+```
+import { FaPizzaSlice, FaHamburger } from 'reaact-icons/fa';
+import { GiNoodles, GiChopsticks } from 'react-icons/gi';
+import styled from 'styled-components';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+function Category() {
+  return (
+    <div>
+        {/* a list with a bunch of different links - use react-router */}
+        <div>
+            <FaPizzaSlice />
+            <h4>Italian</h4>
+        </div>
+        <div>
+            <FaHamburger />
+            <h4>American</h4>
+        </div>        
+        <div>
+            <GiNoodles />
+            <h4>Thai</h4>
+        </div>
+        <div>
+            <GiChopsticks />
+            <h4>Japanese</h4>
+        </div>
+    </div>
+  )
+}
+
+export default Category
+```
+
+* use Category Component in App.js, not in Home.jsx
+    * that buttons will be always displayed...
+    * Home is one of the fragments that will be replaced according to the user click
+
+* NavLink : to navigate to another route
+    * properties
+        * to : which route to go(string)
+        
+
+
+### Routing
+
+* pages > Pages.jsx
+
+```
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+```
+
+* use React-router-dom
+    * https://www.geeksforgeeks.org/what-is-react-router-dom/
+    * https://www.geeksforgeeks.org/link-and-navlink-components-in-react-router-dom/
+
+
+* setup <Routes>
+    * an intelligent component that looks at the paths and figures out which route to render out
+    * page들을 "Routes"로 감싼다
+
+
+* setup <Route>
+    * Routes 내부의 각 페이지들은 Route 컴포넌트들로 구현된다.
+    * Route props
+        * path : 해당 페이지의 path명
+        * element : 실제로 렌더링할 페이지 컴포넌트
+
+```
+import Category from '../components/Category';
+import Home from './Home';
+import React from 'react';
+import Cuisines from './Cuisines';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+function Pages() {
+  return (
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/cuisine' element={<Cuisines />} />
+      </Routes>
+  )
+}
+
+export default Pages;
+```
+
+* components > Category.jsx
+    * set up links to actually take us to those specific pages
+    * make use of <NavLink>
+        * differences from <Link>?
+            * <NavLink> gives a class called 'active'
+            * whenever the link is clicked, <NavLink> adds a class of active to it -> you can add specific styling associated to that
+
+---
+## Cuisine Page
+* pages > Cuisines.jsx
+
+```
+import { FaPizzaSlice, FaHamburger } from 'reaact-icons/fa';
+import { GiNoodles, GiChopsticks } from 'react-icons/gi';
+import styled from 'styled-components';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+function Category() {
+  return (
+    <List>
+        {/* a list with a bunch of different links - use react-router */}
+        <NavLink to={'/cuisine/Italian'}>
+            <FaPizzaSlice />
+            <h4>Italian</h4>
+        </NavLink>
+        <NavLink to={'/cuisine/American'}>
+            <FaHamburger />
+            <h4>American</h4>
+        </NavLink>        
+        <NavLink to={'/cuisine/Thai'}>
+            <GiNoodles />
+            <h4>Thai</h4>
+        </NavLink>
+        <NavLink to={'/cuisine/Japanese'}>
+            <GiChopsticks />
+            <h4>Japanese</h4>
+        </NavLink>
+    </List>
+  )
+}
+
+const List = styled.div`
+    display: flex;
+    // Flex 아이템들은 가로 방향으로 배치되고, 자신이 가진 내용물의 width 만큼만 차지하게 되지요. 마치 inline 요소들 처럼요. height는 컨테이너의 높이만큼 늘어납니다.
+    justify-content: center;
+    margin: 2rem 0rem;
+`;
+
+
+
+export default Category
+```
+
+* App.js
+    * setup BrowserRouter
+        * browser router around the pages is needed
+        * when setting up react router, browser router which gives the functionality for routes to work is needed
+        * Router 관련 모든 컴포넌트들의 상위 계층에 위치해야함
+        * gives the ability for the routes to work 
+
+    ```
+    import { BrowserRouter } from "react-router-dom";
+    import Category from "./components/Category";
+    import Pages from "./pages/Pages";
+
+    function App() {
+    return (
+        <div className="App">
+        <BrowserRouter>
+            <Category />
+            <Pages />
+        </BrowserRouter>
+        </div>
+    );
+    }
+
+    export default App;
+
+    ```
+
+### Cuisine Page
+
+* setting up
+```
+import React from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { Link, useParams } from 'react-router-dom';
+```
+
+* What is useParams?
+    * for making use of `dynamic routing`
+    * to pull out the keyword from up here and the url
+    * useParams() 실행 시, type 키와 그에 해당하는 값을 가진 객체가 반환된다.
+    * useParams()를 할당한 변수의 type을 조회하여 라우터로부터 넘겨받은 값을 활용할 수 있게 된다.
+
+    * useEffect와 함께 활용 시 주의점
+        * 두 번째 변수에 useParams()의 반환값인 변수 자체를 넣는 것이 아니라 type를 넣어야 type이 변경 시 첫 번째 매개변수가 다시 실행
+        ```
+        useEffect(() => {
+            console.log(params);
+            getCuisine(params.type);
+        }, [params.type]);
+
+        const [cuisine, setCuisine] = useState([]); // to store the data from the api
+
+        // useParams : to get the parameter from the route path defined in Pages.jsx => making use of "dynamic routing"
+        const getCuisine = async (name) => {
+            const data = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${name}`);
+            const recipes = await data.json();
+            setCuisine(recipes.results);
+        }
+        ```
