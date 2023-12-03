@@ -951,3 +951,38 @@ const getSearchResult = async (query) => {
 ```
 
 ### Navigate to Recipe Detail
+* pages > Recipe.jsx
+* add Recipe Page into Pages.jsx
+
+* when button clicked
+    * add a class of active to the buttons
+    `const [activeTab, setActiveTab] = useState('instructions');`
+    ```
+    <Info>
+        <Button className={activeTab === 'instructions' ? 'active' : ''} onClick={() => setActiveTab('instructions')}>Instructions</Button>
+        <Button className={activeTab === 'ingredients' ? 'active' : ''} onClick={() => setActiveTab('ingredients')}>Ingredients</Button>
+    </Info>
+    ```
+    ```
+    // active or not
+    const DetailWrapper = styled.div`
+        margin-top: 10rem;
+        margin-bottom: 5rem;
+        display: flex;
+        h2 {
+            margin-bottom: 2rem;
+        }
+        li {
+            font-size: 1.2rem;
+            line-height: 2.5rem;
+        }
+        ul {
+            margin-top: 2rem;
+        }
+        // if the classname is active...
+        .active {
+            background: linear-gradient(35deg, #494949, #313131);
+            color: white;
+        }
+    `;
+    ```

@@ -6,6 +6,7 @@ import React from 'react';
 import Cuisines from './Cuisines';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import SearchResult from './SearchResult';
+import Recipe from './Recipe';
 
 function Pages() {
   return (
@@ -13,6 +14,7 @@ function Pages() {
         <Route path='/' element={<Home />} />
         <Route path='/cuisine/:type' element={<Cuisines />} />
         <Route path='/search/:query' element={<SearchResult />} />
+        <Route path='/recipe/:id' element={<Recipe />} />
       </Routes>
   )
 }
