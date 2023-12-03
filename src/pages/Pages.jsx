@@ -5,12 +5,14 @@ import Home from './Home';
 import React from 'react';
 import Cuisines from './Cuisines';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SearchResult from './SearchResult';
 
 function Pages() {
   return (
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/cuisine' element={<Cuisines />} />
+        <Route path='/cuisine/:type' element={<Cuisines />} />
+        <Route path='/search/:query' element={<SearchResult />} />
       </Routes>
   )
 }

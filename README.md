@@ -663,6 +663,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
     * Route props
         * path : 해당 페이지의 path명
         * element : 실제로 렌더링할 페이지 컴포넌트
+    * `dynamic routing` : use colon(:) and parameter name
+
 
 ```
 import Category from '../components/Category';
@@ -675,7 +677,7 @@ function Pages() {
   return (
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/cuisine' element={<Cuisines />} />
+        <Route path='/cuisine/:type' element={<Cuisines />} />
       </Routes>
   )
 }
@@ -795,5 +797,138 @@ import { Link, useParams } from 'react-router-dom';
             const data = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${name}`);
             const recipes = await data.json();
             setCuisine(recipes.results);
+        }
+        ```
+
+### Styling up each NavLink Page
+* use styled-components
+    * using styled-components parameter, we can style other components
+    * `styled(ComponentName)`
+
+* components > Category.jsx
+
+    ```
+    const SLink = styled(NavLink)`
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%; // just to make it look like a circle
+    `;
+    ```
+
+    * replace NavLink -> SLink
+    ```
+    function Category() {
+        return (
+            <List>
+                {/* a list with a bunch of different links - use react-router */}
+                <SLink to={'/cuisine/Italian'}>
+                    <FaPizzaSlice />
+                    <h4>Italian</h4>
+                </SLink>
+                <SLink to={'/cuisine/American'}>
+                    <FaHamburger />
+                    <h4>American</h4>
+                </SLink>        
+                <SLink to={'/cuisine/Thai'}>
+                    <GiNoodles />
+                    <h4>Thai</h4>
+                </SLink>
+                <SLink to={'/cuisine/Japanese'}>
+                    <GiChopsticks />
+                    <h4>Japanese</h4>
+                </SLink>
+            </List>
+        )
+    }
+    ```
+
+### Search Component
+```
+import React from 'react';
+import styled from 'styled-components';
+import { FaSearch } from 'react-icons/fa';
+
+function Search() {
+  return (
+    <div>Search</div>
+  )
+}
+
+export default Search
+```
+
+* make use of <input> inside <form>
+
+* to implement search function
+    * get the value of the input text
+
+```
+function Search() {
+
+    const [input, setInput] = useState('');
+    // get the input from the user
+
+    // submitHandler : to deal with the enter key press
+    const submitHandler = (e) => {
+        // preventDefault : to prevent the page from refreshing
+        // components that don't need to be updated when the state changes
+        e.preventDefault();
+        console.log(input);
+    }
+
+
+  return (
+    <FormStyle onSubmit={submitHandler}>
+        <div>
+            {/* add state value in input + onChange use event*/}
+            <input 
+            type="text" 
+            value={input} 
+            placeholder="Search" 
+            onChange={(e) => setInput(e.target.value)} />
+        </div>
+    </FormStyle>
+  )
+}
+```
+
+* add route for Search Page
+```
+function Pages() {
+  return (
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/cuisine/:type' element={<Cuisines />} />
+        <Route path='/search/:query' element={<SearchResult />} />
+      </Routes>
+  )
+}
+
+export default Pages;
+```
+
+* 앞의 예시와는 달리, 검색 결과는 <NavLink>를 통해 검색 결과 페이지로 이동하는 것으로 구현하지 않음. form에 텍스트를 입력하고 enter 키를 눌렀을 때 페이지로 이동하도록 해야함
+    * 사용자가 특정 페이지로 이동할 수 있도록 하는 별도의 함수로 구현하는 것이 필요
+    * 이것을 위해, `useNavigate` 활용
+    * Search.jsx
+        ```
+        import { useNavigate } from 'react-router-dom';
+        ```
+        ```
+        const [input, setInput] = useState('');
+        // get the input from the user
+        const navigate = useNavigate();
+
+        // submitHandler : to deal with the enter key press
+        const submitHandler = (e) => {
+            // preventDefault : to prevent the page from refreshing
+            // components that don't need to be updated when the state changes
+            e.preventDefault();
+            console.log(input);
+
+            // navigate to the search page
+            navigate('/search/' + input);
         }
         ```

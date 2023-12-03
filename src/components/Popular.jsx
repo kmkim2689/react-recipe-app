@@ -44,7 +44,7 @@ function Popular() {
         <Wrapper>
             <h3>Popular Picks</h3>
             <Splide options={{perPage: 4, arrows: false, pagination: false, drag: 'free', gap: '5rem'}}>
-                // reason of `popular &&` : to make sure that the data is fetched before we render the component 
+                {/* // reason of `popular &&` : to make sure that the data is fetched before we render the component  */}
                 {popular && popular.map((recipe) => {
                     return (
                         <SplideSlide key={recipe.id}>
