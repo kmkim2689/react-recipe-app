@@ -932,3 +932,22 @@ export default Pages;
             navigate('/search/' + input);
         }
         ```
+
+### Render the search result on SearchResult
+```
+const [searchResult, setSearchResult] = useState([]);
+let params = useParams();
+
+useEffect(() => {
+    getSearchResult(params.query);
+}, [params.query]);
+
+
+const getSearchResult = async (query) => {
+    const data = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&query=${query}`);
+    const recipes = await data.json();
+    setSearchResult(recipes.results);
+}
+```
+
+### Navigate to Recipe Detail
